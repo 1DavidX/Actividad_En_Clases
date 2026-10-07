@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reto: Comprador Inteligente</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#121212;--panel:#1e1e1e;--panel2:#242424;--text:#fff;--muted:#aaa;--accent:#ff5500}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;line-height:1.5}
+header{padding:15px 20px;background:var(--panel);border-bottom:1px solid #333;display:flex;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5}
+header b:last-child{color:var(--accent)}
+main{max-width:1000px;margin:auto;padding:24px 16px}
+.screen{display:none}.active{display:block}
+.hero,.card{background:var(--panel);border:1px solid #333;border-radius:16px;padding:24px}
+.hero{text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
+.card{cursor:pointer;transition:.15s}
+.card:hover,.choice:hover{border-color:var(--accent);transform:translateY(-1px)}
+.selected{border:2px solid var(--accent)}
+button{border:0;border-radius:10px;padding:12px 18px;background:var(--accent);color:#fff;font-weight:bold;cursor:pointer;font-size:15px}
+.choice{display:block;width:100%;margin:10px 0;text-align:left;background:var(--panel2);border:1px solid #444;color:#fff}
+.muted,small{color:var(--muted)}
+.price{font-size:21px;font-weight:bold;margin:12px 0}
+.tag{display:inline-block;background:#333;padding:5px 8px;border-radius:20px;font-size:12px}
+.bar{height:8px;background:#333;border-radius:8px;margin:18px 0}
+.fill{height:100%;background:var(--accent);border-radius:8px}
+.result{font-size:42px;font-weight:bold;margin:10px}
+.badge{display:inline-block;padding:7px 12px;border-radius:20px;background:#333;font-weight:bold}
+hr{border:0;border-top:1px solid #333;margin:24px 0}
+@media(max-width:620px){header{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <b>🛒 RETO: COMPRADOR INTELIGENTE</b>
+  <b>$200.000 virtuales</b>
+</header>
+
+<main>
+<section id="start" class="screen active">
+  <div class="hero">
+    <span class="tag">ACTIVIDAD ACADÉMICA</span>
+    <h1>¿Qué tan buen comprador digital eres?</h1>
+    <p>Haz una compra simulada y toma decisiones como si estuvieras frente a una tienda virtual.</p>
+    <p class="muted">Lee cada situación y piensa antes de elegir. Al final descubrirás tu resultado.</p>
+    <p class="muted">No solicita datos reales ni realiza pagos.</p>
+    <button onclick="show('r1')">Comenzar reto</button>
+  </div>
+</section>
+
+<section id="r1" class="screen">
+  <h2>Ronda 1 · ¿Qué comprarías?</h2>
+  <p>Estás buscando una camiseta. Tienes estas tres opciones:</p>
+  <div class="bar"><div class="fill" style="width:25%"></div></div>
+  <div class="grid">
+    <div class="card" onclick="pick(0,this)">
+      <span class="tag">A</span><h3>Camiseta Básica</h3>
+      <p>“Cómoda, fresca y bonita.”</p>
+      <div class="price">$75.000</div>
+      <small>Sin reseñas · Sin información sobre material</small>
+    </div>
+    <div class="card" onclick="pick(1,this)">
+      <span class="tag">B</span><h3>Camiseta Essential</h3>
+      <p>Descripción completa y varias opiniones de compradores.</p>
+      <div class="price">$85.000</div>
+      <small>⭐ 4.8/5 · 127 reseñas · Tallas S–XL</small>
+    </div>
+    <div class="card" onclick="pick(2,this)">
+      <span class="tag">C</span><h3>Camiseta Premium</h3>
+      <p>Se ve atractiva y tiene una calificación perfecta.</p>
+      <div class="price">$95.000</div>
+      <small>⭐ 5/5 · Solo 3 reseñas · Descripción limitada</small>
+    </div>
+  </div>
+  <br><button onclick="next1()">Continuar</button>
+</section>
+
+<section id="r2" class="screen">
+  <h2>Ronda 2 · Antes de pagar</h2>
+  <p id="chosen"></p>
+  <div class="bar"><div class="fill" style="width:50%"></div></div>
+  <div class="card">
+    <h3>Encuentras un problema</h3>
+    <p>La tienda no muestra las medidas de las tallas en centímetros.</p>
+    <p class="muted">¿Cuál sería tu siguiente paso?</p>
+  </div>
+  <button class="choice" onclick="goR3(25)">🔎 Buscar una guía de tallas o medidas antes de comprar.</button>
+  <button class="choice" onclick="goR3(0)">🛒 Comprar mi talla habitual sin revisar más información.</button>
+  <button class="choice" onclick="goR3(10)">💬 Buscar opiniones de otros compradores para saber cómo viene la talla.</button>
+</section>
+
+<section id="r3" class="screen">
+  <h2>Ronda 3 · El carrito</h2>
+  <p>Tu camiseta cuesta <b>$85.000</b> y el envío cuesta <b>$8.000</b>.</p>
+  <p>También encuentras una gorra de <b>$20.000</b>. Si superas los $100.000, el envío es gratis.</p>
+  <div class="bar"><div class="fill" style="width:75%"></div></div>
+  <p class="muted">Tienes $200.000 virtuales. Piensa en el costo total, no solamente en la promoción.</p>
+  <button class="choice" onclick="goR4(25)">🚚 Comprar solo la camiseta y pagar $93.000 en total.</button>
+  <button class="choice" onclick="goR4(25)">🧢 Comprar camiseta + gorra: $105.000 y obtener envío gratis.</button>
+  <button class="choice" onclick="goR4(0)">💸 Agregar cosas que no necesito solo para conseguir envío gratis.</button>
+  <button class="choice" onclick="goR4(10)">⏳ Esperar y revisar las condiciones del envío antes de decidir.</button>
+</section>
+
+<section id="r4" class="screen">
+  <h2>Ronda 4 · ¿Comprarías aquí?</h2>
+  <p>Ya encontraste un producto que te gusta, pero descubres que la tienda:</p>
+  <ul>
+    <li>muestra fotos y precios;</li>
+    <li>no tiene políticas de devolución visibles;</li>
+    <li>no muestra datos claros de contacto.</li>
+  </ul>
+  <div class="bar"><div class="fill" style="width:100%"></div></div>
+  <p class="muted">Última decisión: ¿qué harías antes de pagar?</p>
+  <button class="choice" onclick="finish(25)">⚠️ Buscar más información, contacto y condiciones antes de pagar.</button>
+  <button class="choice" onclick="finish(0)">💳 Comprar inmediatamente porque el precio y las fotos me gustan.</button>
+  <button class="choice" onclick="finish(10)">🕵️ Buscar opiniones externas sobre la tienda antes de decidir.</button>
+</section>
+
+<section id="end" class="screen">
+  <div class="hero">
+    <span class="badge" id="badge">RESULTADO</span>
+    <h2>🏆 Tu resultado</h2>
+    <div id="score" class="result"></div>
+    <p id="msg"></p>
+    <hr>
+    <h3>¿Qué demuestra el reto?</h3>
+    <p>Comprar por internet no consiste solamente en escoger un producto. También es importante revisar la información disponible, la experiencia de compra, los costos y las señales de confianza de la tienda.</p>
+    <p class="muted"><b>Conexión con la exposición:</b> estos son algunos de los elementos que debemos observar cuando analizamos una tienda virtual.</p>
+    <button onclick="location.reload()">Jugar otra vez</button>
+  </div>
+</section>
+</main>
+
+<script>
+let score=0,p=-1;
+
+const data=[
+"Camiseta Básica — $75.000. Descripción general, sin reseñas y sin información sobre material.",
+"Camiseta Essential — $85.000. Descripción completa, 4.8/5, 127 reseñas y tallas S–XL.",
+"Camiseta Premium — $95.000. 5/5 con solo 3 reseñas y descripción limitada."
+];
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pick(i,e){
+  p=i;
+  document.querySelectorAll('#r1 .card').forEach(x=>x.classList.remove('selected'));
+  e.classList.add('selected');
+}
+
+function next1(){
+  if(p<0){alert('Elige una opción primero.');return}
+  if(p===1) score+=25;
+  else if(p===2) score+=10;
+  else score+=0;
+  document.getElementById('chosen').innerHTML='<b>Elegiste:</b> '+data[p];
+  show('r2');
+}
+
+function goR3(points){score+=points;show('r3')}
+function goR4(points){score+=points;show('r4')}
+
+function finish(points){
+  score+=points;
+  document.getElementById('score').textContent=score+'/100';
+
+  let title,msg;
+  if(score===100){
+    title='🏆 COMPRADOR EXPERTO';
+    msg='¡100/100! Analizaste la información, los costos y las señales de confianza antes de decidir.';
+  }else if(score>=75){
+    title='🛒 COMPRADOR INTELIGENTE';
+    msg='¡Muy buen resultado! Tomaste decisiones pensando más allá del precio.';
+  }else if(score>=50){
+    title='🙂 COMPRADOR EN APRENDIZAJE';
+    msg='Vas por buen camino, pero todavía hay algunos aspectos que conviene revisar antes de comprar.';
+  }else if(score>0){
+    title='🤔 COMPRADOR DESPREVENIDO';
+    msg='Tu resultado muestra que algunas decisiones de compra pueden mejorar si revisas más información y condiciones.';
+  }else{
+    title='🥲 0/100 — ¡HAY QUE INVESTIGAR MÁS!';
+    msg='No pasa nada: justamente para eso existe el reto. Antes de comprar, revisa la información, los costos y la confianza que ofrece la tienda.';
+  }
+
+  document.getElementById('badge').textContent=title;
+  document.getElementById('msg').textContent=msg;
+  show('end');
+}
+</script>
+</body>
+</html>
